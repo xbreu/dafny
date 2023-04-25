@@ -25,6 +25,7 @@ using Microsoft.Boogie;
 using Bpl = Microsoft.Boogie;
 using System.Diagnostics;
 using Microsoft.Dafny.Plugins;
+using Microsoft.Dafny.ContractChecking;
 
 namespace Microsoft.Dafny {
 
@@ -79,7 +80,7 @@ namespace Microsoft.Dafny {
       // We do not want output such as "Compiled program written to Foo.cs"
       // from the compilers, since that changes with the target language
       "/compileVerbose:0",
-      
+
       // Set a default time limit, to catch cases where verification time runs off the rails
       "/timeLimit:300"
     };
@@ -428,6 +429,10 @@ namespace Microsoft.Dafny {
       if (dafnyProgram != null && options.ExtractCounterexample && exitValue == ExitValue.VERIFICATION_ERROR) {
         PrintCounterexample(options, options.ModelViewFile);
       }
+      
+      var checker = new ContractChecker(options, dafnyFileNames[0]);
+      checker.CheckProgram(dafnyProgram);
+
       return exitValue;
     }
 
@@ -547,7 +552,7 @@ namespace Microsoft.Dafny {
     /// assertion and print it to the console
     /// </summary>
     /// <param name="modelViewFile"> Name of the file from which to read
-    /// the counterexample </param> 
+    /// the counterexample </param>
     private static void PrintCounterexample(DafnyOptions options, string modelViewFile) {
       var model = DafnyModel.ExtractModel(options, File.ReadAllText(modelViewFile));
       Console.WriteLine("Counterexample for first failing assertion: ");
