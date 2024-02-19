@@ -25,7 +25,6 @@ using Microsoft.Boogie;
 using Bpl = Microsoft.Boogie;
 using System.Diagnostics;
 using Microsoft.Dafny.Plugins;
-using Microsoft.Dafny.ContractChecking;
 
 namespace Microsoft.Dafny {
 
@@ -429,9 +428,6 @@ namespace Microsoft.Dafny {
       if (dafnyProgram != null && options.ExtractCounterexample && exitValue == ExitValue.VERIFICATION_ERROR) {
         PrintCounterexample(options, options.ModelViewFile);
       }
-      
-      var checker = new ContractChecker(options, dafnyFileNames[0]);
-      checker.CheckProgram(dafnyProgram);
 
       return exitValue;
     }
